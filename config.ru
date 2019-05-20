@@ -1,7 +1,4 @@
-class Application
-    def call(env)
-        [200, {}, ["Hello from Rack"]]
-    end
-end
+require_relative 'application'
+require_relative 'database'
 
 run Application.new
