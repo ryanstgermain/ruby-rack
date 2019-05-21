@@ -1,3 +1,4 @@
+require_relative 'application_helpers'
 require_relative 'users_application'
 require_relative 'rides_application'
 require_relative 'database'
