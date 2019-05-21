@@ -1,4 +1,12 @@
-require_relative 'application'
+require_relative 'users_application'
+require_relative 'rides_application'
 require_relative 'database'
 
-run Application.new
+map("/users") do
+    run UsersApplication.new
+end
+
+map("/rides") do
+    run RidesApplication.new
+end
+
