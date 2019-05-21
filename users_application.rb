@@ -21,12 +21,12 @@ class UsersApplication
   end
 
   def get_all_users(request, response)
-    respond_with_object(response, Database.users)
+      respond_with_object(response, Database.users(request.env["rides_app.user_id]"]))
   end
 
   def get_a_user(request, response)
     id = request.path_info.split("/").last.to_i
-    user = Database.users[id]
+    user = Database.users(request.env["rides_app.user_id"])[id]
     if user.nil?
       error(response, "No user with id #{id}", 404)
     else
