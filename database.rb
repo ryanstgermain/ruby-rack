@@ -4,8 +4,16 @@ class Database
         2 => { name: "Coraline", bike: "Trek" }
     }
 
-    def self.users
-        USERS
+    def self.users(user_id)
+        USERS.select do |id, _|
+            id == user_id
+        end
+    end
+  
+    def self.user_by_api_key(key)
+        USERS.values.find do |user|
+            user[:api_key] == key
+        end
     end
 
     RIDES = {
