@@ -1,25 +1,36 @@
 require 'json'
 
 class UsersApplication
-    def call(env)
-        response = Rack::Response.new
-        response.headers["Content-Type"] = "application/json"
-        if env["PATH_INFO"] == ""
-            response.write(JSON.generate(Database.users))
-        elsif env["PATH_INFO"] =~ %r{/\d+}
-            id = env["PATH_INFO"].split("/").last.to_i
-            user = Database.users[id]
-            if user.nil?
-                response.status = 404
-                response.write("No user with id #{id}")
-            else
-                response.write(JSON.generate(Database.users[id]))
-            end
-        else
-            response.status = 404
-            response.write("Nothing here!")
-        end
+  include ApplicationHelpers
 
-        response.finish
+  def call(env)
+    request  = Rack::Request.new(env)
+    response = Rack::Response.new
+    response.headers["Content-Type"] = "application/json"
+
+    case request.path_info
+    when ""
+      get_all_users(request, response)
+    when %r{/\d+}
+      get_a_user(request, response)
+    else
+      missing(response)
     end
+
+    response.finish
+  end
+
+  def get_all_users(request, response)
+    respond_with_object(response, Database.users)
+  end
+
+  def get_a_user(request, response)
+    id = request.path_info.split("/").last.to_i
+    user = Database.users[id]
+    if user.nil?
+      error(response, "No user with id #{id}", 404)
+    else
+      respond_with_object(response, user)
+    end
+  end
 end
